@@ -14,3 +14,4 @@ Create a script that creates a directory called my_dir with permissions 751 in t
 Write a script that changes the group owner to school for the file hello
 Create a script that adds execute permission to all subdirectories of the current directory for the owner
 Create a script that adds execute permission to all subdirectories of the current directory for the owner
+Write a script that changes the owner to vincent and the group owner to staff for all the files
