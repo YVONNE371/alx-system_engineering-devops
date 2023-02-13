@@ -1,1 +1,1 @@
-good file
+state of directory
