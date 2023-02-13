@@ -1,1 +1,1 @@
-state of directory
+duplicate the last line
