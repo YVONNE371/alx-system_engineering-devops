@@ -1,1 +1,1 @@
-duplicate the last line
+no more java script
