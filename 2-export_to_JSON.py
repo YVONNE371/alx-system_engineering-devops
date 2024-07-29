@@ -1,40 +1,42 @@
 #!/usr/bin/python3
+"""Export data from an API to JSON format.
 """
-Script to that takes an integer sa an
-id and gets data from a API
-"""
+from json import dumps
+import requests
+from sys import argv
+
 if __name__ == '__main__':
-    import json
-    import requests
-    import sys
+    # Checks if the argument can be converted to a number
+    try:
+        emp_id = int(argv[1])
+    except ValueError:
+        exit()
 
-    if len(sys.argv) > 1:
-        user_id = sys.argv[1]
-        if user_id.isdigit():
-            user_id = int(user_id)
-            url_user = f'https://jsonplaceholder.typicode.com/users/{user_id}'
-            response_user = requests.get(url_user)
-            user_data = response_user.json()
-            user = user_data.get('username')
-            url = 'https://jsonplaceholder.typicode.com/todos/'
-            response = requests.get(url)
-            all_to_do = response.json()
-            not_done = 0
-            row = []
-            all_data = {}
-            for to_do in all_to_do:
-                if user_id == to_do.get('userId'):
-                    status = to_do.get('completed')
-                    task = str(to_do.get('title'))
-                    obj = {"task": task,
-                           "completed": status,
-                           "username": user
-                           }
-                    row.append(obj)
-            # dictionary
-            all_data = {str(user_id): row}
+    # Main formatted names to API uris and filenames
+    api_url = 'https://jsonplaceholder.typicode.com'
+    user_uri = '{api}/users/{id}'.format(api=api_url, id=emp_id)
+    todo_uri = '{user_uri}/todos'.format(user_uri=user_uri)
+    filename = '{emp_id}.json'.format(emp_id=emp_id)
 
-            # json object
-            json_data = json.dumps(all_data)
-            with open(f'{user_id}.json', 'w', encoding='utf-8') as jsonfile:
-                json.dump(all_data, jsonfile)
+    # User Response
+    u_res = requests.get(user_uri).json()
+
+    # User TODO Response
+    t_res = requests.get(todo_uri).json()
+
+    # A list of all tasks of an user
+    user_tasks = list()
+
+    for elem in t_res:
+        data = {
+            'task': elem.get('title'),
+            'completed': elem.get('completed'),
+            'username': u_res.get('username')
+        }
+
+        user_tasks.append(data)
+
+    # Create the new file for the user to save the information
+    # Filename example: `{user_id}.json`
+    with open(filename, 'w', encoding='utf-8') as jsonfile:
+        jsonfile.write(dumps({emp_id: user_tasks}))
